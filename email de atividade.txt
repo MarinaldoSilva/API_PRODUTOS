@@ -1,0 +1,153 @@
+Roteiro de Projeto: API de Gestão de Produtos e Estoque
+Para: Desenvolvedor(a) Júnior
+De: Líder Técnico
+Objetivo: Construir uma API RESTful completa com Django REST Framework, seguindo as melhores práticas do mercado, para gerenciar produtos, fornecedores, categorias e estoque.
+
+Fase 1: A Fundação e a Estrutura Profissional
+História: Antes de construir qualquer coisa, precisamos de uma planta baixa sólida e de um terreno limpo. Vamos estruturar nosso projeto como uma empresa de verdade, com departamentos bem definidos, para que ele possa crescer de forma organizada no futuro.
+
+Ticket #1: [Estrutura] - Configuração Inicial e Refatoração para Padrões de Mercado
+
+Preparação do Ambiente:
+
+Crie uma pasta para o projeto.
+
+Dentro dela, crie e ative um ambiente virtual (python -m venv venv e venv\Scripts\activate).
+
+Instale as dependências iniciais: pip install django djangorestframework mysqlclient.
+
+Criação dos Departamentos (Apps):
+
+Crie o projeto principal: django-admin startproject core . (o . no final cria na pasta atual).
+
+Crie o departamento de logística: python manage.py startapp produtos.
+
+Crie o departamento de RH e segurança: python manage.py startapp accounts.
+
+Configuração do Projeto (core/settings.py):
+
+Registre os Departamentos: Adicione 'rest_framework', 'rest_framework.authtoken', 'accounts' e 'produtos' à sua lista de INSTALLED_APPS.
+
+Publique o Decreto Real: No final do arquivo, defina seu modelo de usuário customizado como o padrão do projeto com a linha: AUTH_USER_MODEL = 'accounts.User'.
+
+Configure a conexão com seu banco de dados MySQL (DATABASES).
+
+Modelo de Usuário Oficial (accounts/models.py):
+
+Edite o modelo User para herdar de AbstractUser, garantindo que ele tenha todas as funcionalidades padrão do Django.
+
+Python
+
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    pass
+Limpeza e Construção Inicial:
+
+IMPORTANTE: Se houver qualquer ruína da construção antiga, limpe o terreno. Delete o arquivo db.sqlite3 (se existir) e todas as pastas migrations de dentro dos seus apps. No MySQL, isso significa "dropar" o schema e recriá-lo vazio.
+
+Crie os Manuais de Construção: python manage.py makemigrations.
+
+Execute a Obra: python manage.py migrate.
+
+Fase 2: O Inventário e os Tradutores
+História: Com a estrutura da empresa pronta, precisamos definir o que vamos vender e como vamos descrever esses itens para o mundo exterior.
+
+Ticket #2: [API-Produtos] - Criar Estrutura de Dados e Serializers
+
+Defina os Modelos de produtos (produtos/models.py):
+
+Crie os modelos Fornecedor, Categoria e Produto, conectando-os com ForeignKey.
+
+O modelo Produto deve ter os campos: nome, descricao, preco, disponivel, fornecedor (ForeignKey) e categoria (ForeignKey).
+
+Defina os Serializers (produtos/serializers.py):
+
+Crie um arquivo serializers.py no app produtos.
+
+Crie um ModelSerializer para cada um dos seus modelos (FornecedorSerializer, CategoriaSerializer, ProdutoSerializer).
+
+Na class Meta de cada serializer, defina o model correspondente e a lista de fields que serão expostos na API.
+
+Fase 3: O Atendimento ao Público
+História: Nosso inventário está organizado e temos os manuais de tradução. Agora, precisamos dos departamentos de atendimento (Views) e das linhas telefônicas (URLs) para que os clientes possam interagir conosco.
+
+Ticket #3: [API-Endpoints] - Criar Views e URLs para o Módulo de Produtos
+
+Crie os Departamentos de Atendimento (produtos/views.py):
+
+Para cada modelo, crie um ViewSet que herde de viewsets.ModelViewSet.
+
+Dentro de cada ViewSet, especifique o queryset (os dados que ele gerencia) e a serializer_class (o tradutor que ele usa).
+
+Configure a Central Telefônica de produtos (produtos/urls.py):
+
+Crie um arquivo urls.py no app produtos.
+
+Use o DefaultRouter do DRF para registrar cada ViewSet em um endpoint (ex: router.register(r'produtos', ProdutoViewSet)).
+
+Exponha as URLs geradas pelo router na variável urlpatterns.
+
+Organize a Recepção Principal da API (core/api_urls.py e core/urls.py):
+
+Crie um arquivo core/api_urls.py para centralizar todas as rotas da sua API. Nele, inclua as URLs do app produtos.
+
+Python
+
+# core/api_urls.py
+urlpatterns = [
+    path('', include('produtos.urls')),
+]
+No core/urls.py principal, aponte para essa nova central da API, usando um prefixo com versionamento.
+
+Python
+
+# core/urls.py
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/v1/', include('core.api_urls')),
+]
+Fase 4: Expansão - Controle de Estoque
+História: O time de logística precisa controlar a quantidade de cada produto em nosso armazém.
+
+Ticket #4: [API-Estoque] - Implementar Modelo e Endpoints de Estoque
+
+Expanda os Modelos (produtos/models.py):
+
+Crie o modelo Estoque com os campos quantidade, localizacao e um OneToOneField para o Produto, garantindo que cada produto tenha apenas uma entrada de estoque.
+
+Rode makemigrations e migrate para atualizar o banco.
+
+Crie o Serializer de Estoque (produtos/serializers.py):
+
+Crie o EstoqueSerializer correspondente.
+
+Crie a View e a URL de Estoque (produtos/views.py e produtos/urls.py):
+
+Crie o EstoqueViewSet em views.py.
+
+Registre este novo ViewSet no router que já existe em produtos/urls.py.
+
+Fase 5: Segurança
+História: Os portões do nosso supermercado estão abertos para qualquer um entrar e mexer no estoque. Precisamos de seguranças e de um sistema de crachás.
+
+Ticket #5: [API-Segurança] - Implementar Autenticação e Permissões
+
+Crie o Posto de Emissão de Crachás (Login Endpoint):
+
+Crie o arquivo accounts/urls.py.
+
+Dentro dele, adicione o endpoint de login, importando o obtain_auth_token do DRF.
+
+Python
+
+# accounts/urls.py
+from rest_framework.authtoken.views import obtain_auth_token
+urlpatterns = [ path('login/', obtain_auth_token, name='api_token_auth') ]
+No core/api_urls.py, ative o departamento de autenticação: path('auth/', include('accounts.urls')).
+
+Coloque os Porteiros nos Departamentos:
+
+Em produtos/views.py, importe TokenAuthentication e IsAuthenticatedOrReadOnly.
+
+Adicione as authentication_classes e permission_classes a todos os seus ViewSets para implementar a regra: "Leitura é livre, mas escrita exige crachá".
