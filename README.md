@@ -31,7 +31,7 @@
 # Para acessar em sua máquina e testar o código
 * **1º clonar este repositório:**
  ```bash
-git clone [https://github.com/MarinaldoSilva/API_PRODUTOS.git](https://github.com/MarinaldoSilva/API_PRODUTOS.git)
+git clone https://github.com/MarinaldoSilva/API_PRODUTOS.git
 ```
 <br>
 
