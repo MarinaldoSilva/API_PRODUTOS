@@ -40,10 +40,10 @@ git clone https://github.com/MarinaldoSilva/API_PRODUTOS.git
 * **Instale as dependências:** ```pip install -r requirements.txt```
 * **Configurações do ambiente:** Crie um arquivo chamado ```.env``` , lá vai ter as configurações do ambiente
 
-SECRET_KEY='sua_chave_secreta_aqui'
-DB_NAME='api_controle_produtos'
-DB_USER='seu_usuario_mysql'
-DB_PASSWORD='sua_senha_mysql'
+* **SECRET_KEY=** 'sua_chave_secreta_aqui'
+* **DB_NAME=**'api_controle_produtos'
+* **DB_USER=**'seu_usuario_mysql'
+* **DB_PASSWORD**='sua_senha_mysql'
 
 * **Faça o migrate:** Para fazer a criação dos models (lembre-se de ter um banco configurado na sua máquina)
 * ```python manage.py migrate```
